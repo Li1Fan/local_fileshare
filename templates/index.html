@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>文件共享站</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f7f7;
+        }
+
+        h1 {
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            background-color: rgb(64, 158, 255);
+            color: white;
+        }
+
+        form {
+            margin: 20px;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+        }
+
+        label {
+            margin: 10px 0;
+            display: block;
+        }
+
+        input[type="file"] {
+            background-color: rgb(64, 158, 255);
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        input[type="file"]:hover {
+            background-color: blue;
+        }
+
+        input[type="file"]:active {
+            background-color: blue;
+            box-shadow: none;
+        }
+
+        input[type="submit"],
+        input[type="button"] {
+            border: none;
+            background-color: rgb(64, 158, 255);
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        input[type="submit"]:hover,
+        input[type="button"]:hover {
+            background-color: blue;
+        }
+
+        input[type="submit"]:active,
+        input[type="button"]:active {
+            background-color: blue;
+            box-shadow: none;
+        }
+
+        .x {
+            text-decoration: none;
+        }
+
+        a {
+            color: rgb(64, 158, 255);
+        }
+    </style>
+</head>
+
+<body>
+    <div style="text-align: center;">
+        <h1>文件共享站</h1>
+        <a href="http://192.168.222.108:8888" target="_blank">在线剪贴板</a>
+    </div>
+    <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
+        <label>上传文件：</label>
+        <input type="file" name="file">
+        <input type="submit" value="上传">
+        <br>
+        <br>
+        <div style="display: flex; align-items: center;">
+            <label>文件列表：</label>
+            <!--        <input type="button" value="删除全部" onclick="delete_all()" style="margin-left: 10px;">-->
+            <a href="{{ url_for('delete_all') }}" class="x">❌</a>
+        </div>
+        <ul>
+            {% for file in files %}
+            <li>
+                <a href="{{ url_for('download_file', filename=file) }}">{{ file }}</a>
+                <a href="{{ url_for('delete_file', filename=file) }}" class="x">❌</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </form>
+    <script>
+        function delete_all() {
+            window.location.href = "{{ url_for('delete_all') }}";
+        }
+
+
+    </script>
+</body>
+
+</html>
