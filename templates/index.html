@@ -3,129 +3,384 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>文件共享站</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📁</text></svg>">
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f7f7f7;
+            background-color: #f0f4f8;
+            color: #333;
         }
 
-        h1 {
+        /* 顶部导航栏 */
+        .navbar {
+            background: linear-gradient(135deg, #4096ff, #1677ff);
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 8px rgba(22, 119, 255, 0.3);
+        }
+
+        .navbar h1 {
             margin: 0;
-            padding: 20px;
-            text-align: center;
-            background-color: rgb(64, 158, 255);
+            font-size: 20px;
             color: white;
+            font-weight: 600;
+            letter-spacing: 1px;
         }
 
-        form {
-            margin: 20px;
-            padding: 20px;
-            background-color: white;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            border-radius: 5px;
-        }
-
-        label {
-            margin: 10px 0;
-            display: block;
-        }
-
-        input[type="file"] {
-            background-color: rgb(64, 158, 255);
-            color: white;
-            padding: 10px 20px;
-            text-align: center;
+        .navbar a {
+            color: rgba(255,255,255,0.85);
             text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 10px;
+            font-size: 14px;
+            padding: 5px 12px;
+            border: 1px solid rgba(255,255,255,0.5);
+            border-radius: 20px;
+            transition: all 0.2s;
+        }
+
+        .navbar a:hover {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        /* 主体内容 */
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 0 16px;
+        }
+
+        /* 上传区域 */
+        .upload-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+
+        .upload-card h2 {
+            margin: 0 0 16px 0;
+            font-size: 15px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        /* 拖拽上传区 */
+        .drop-zone {
+            border: 2px dashed #c8d8f0;
+            border-radius: 10px;
+            padding: 32px 20px;
+            text-align: center;
             cursor: pointer;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: all 0.2s;
+            background: #f8fbff;
+            position: relative;
         }
 
-        input[type="file"]:hover {
-            background-color: blue;
+        .drop-zone:hover,
+        .drop-zone.dragover {
+            border-color: #1677ff;
+            background: #eef5ff;
         }
 
-        input[type="file"]:active {
-            background-color: blue;
-            box-shadow: none;
+        .drop-zone input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
         }
 
-        input[type="submit"],
-        input[type="button"] {
+        .drop-zone .icon {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .drop-zone .hint {
+            color: #888;
+            font-size: 14px;
+            margin: 0 0 4px 0;
+        }
+
+        .drop-zone .hint strong {
+            color: #1677ff;
+        }
+
+        .drop-zone .sub-hint {
+            color: #bbb;
+            font-size: 12px;
+            margin: 0;
+        }
+
+        /* 已选文件提示 */
+        #file-hint {
+            margin-top: 10px;
+            font-size: 13px;
+            color: #1677ff;
+            min-height: 20px;
+        }
+
+        /* 上传按钮 */
+        .btn-upload {
+            margin-top: 14px;
+            width: 100%;
+            padding: 11px;
+            background: linear-gradient(135deg, #4096ff, #1677ff);
+            color: white;
             border: none;
-            background-color: rgb(64, 158, 255);
-            color: white;
-            padding: 10px 20px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 10px;
+            border-radius: 8px;
+            font-size: 15px;
             cursor: pointer;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: opacity 0.2s, transform 0.1s;
+            box-shadow: 0 2px 8px rgba(22, 119, 255, 0.35);
         }
 
-        input[type="submit"]:hover,
-        input[type="button"]:hover {
-            background-color: blue;
+        .btn-upload:hover {
+            opacity: 0.9;
         }
 
-        input[type="submit"]:active,
-        input[type="button"]:active {
-            background-color: blue;
-            box-shadow: none;
+        .btn-upload:active {
+            transform: scale(0.98);
         }
 
-        .x {
+        /* 文件列表卡片 */
+        .list-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px 24px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+
+        .list-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .list-header h2 {
+            margin: 0;
+            font-size: 15px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .btn-delete-all {
+            font-size: 13px;
+            color: #ff4d4f;
             text-decoration: none;
+            padding: 4px 12px;
+            border: 1px solid #ffccc7;
+            border-radius: 20px;
+            transition: all 0.2s;
         }
 
-        a {
-            color: rgb(64, 158, 255);
+        .btn-delete-all:hover {
+            background: #fff1f0;
+            color: #ff4d4f;
+        }
+
+        /* 日期分组 */
+        .date-divider {
+            display: flex;
+            align-items: center;
+            margin: 14px 0 6px 0;
+            gap: 8px;
+        }
+
+        .date-divider span {
+            font-size: 12px;
+            font-weight: 600;
+            color: #1677ff;
+            white-space: nowrap;
+        }
+
+        .date-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e8f0fe;
+        }
+
+        /* 文件列表项 */
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li.file-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 8px;
+            border-radius: 8px;
+            transition: background 0.15s;
+            gap: 8px;
+        }
+
+        li.file-item:hover {
+            background: #f5f8ff;
+        }
+
+        .file-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+            width: 28px;
+            text-align: center;
+        }
+
+        .file-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .file-info a {
+            color: #333;
+            text-decoration: none;
+            font-size: 14px;
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            transition: color 0.15s;
+        }
+
+        .file-info a:hover {
+            color: #1677ff;
+        }
+
+        .file-time {
+            font-size: 12px;
+            color: #bbb;
+            margin-top: 2px;
+        }
+
+        .btn-del {
+            text-decoration: none;
+            font-size: 14px;
+            opacity: 0.4;
+            flex-shrink: 0;
+            transition: opacity 0.2s;
+            padding: 4px;
+        }
+
+        .btn-del:hover {
+            opacity: 1;
+        }
+
+        /* 空状态 */
+        .empty {
+            text-align: center;
+            padding: 40px 0;
+            color: #bbb;
+            font-size: 14px;
+        }
+
+        .empty .empty-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 
 <body>
-    <div style="text-align: center;">
-        <h1>文件共享站</h1>
-        <a href="http://192.168.222.108:8888" target="_blank">在线剪贴板</a>
+    <div class="navbar">
+        <h1>📁 文件共享站</h1>
+        {% if clipboard_url %}
+        <a href="{{ clipboard_url }}" target="_blank">📋 在线剪贴板</a>
+        {% endif %}
     </div>
-    <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
-        <label>上传文件：</label>
-        <input type="file" name="file">
-        <input type="submit" value="上传">
-        <br>
-        <br>
-        <div style="display: flex; align-items: center;">
-            <label>文件列表：</label>
-            <!--        <input type="button" value="删除全部" onclick="delete_all()" style="margin-left: 10px;">-->
-            <a href="{{ url_for('delete_all') }}" class="x">❌</a>
+
+    <div class="container">
+        <!-- 上传区 -->
+        <div class="upload-card">
+            <h2>上传文件</h2>
+            <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data" id="upload-form">
+                <div class="drop-zone" id="drop-zone">
+                    <input type="file" name="file" multiple id="file-input">
+                    <div class="icon">☁️</div>
+                    <p class="hint">拖拽文件到此处，或 <strong>点击选择</strong></p>
+                    <p class="sub-hint">支持同时选择多个文件</p>
+                </div>
+                <div id="file-hint"></div>
+                <button type="submit" class="btn-upload">上传</button>
+            </form>
         </div>
-        <ul>
-            {% for file in files %}
-            <li>
-                <a href="{{ url_for('download_file', filename=file) }}">{{ file }}</a>
-                <a href="{{ url_for('delete_file', filename=file) }}" class="x">❌</a>
-            </li>
-            {% endfor %}
-        </ul>
-    </form>
+
+        <!-- 文件列表 -->
+        <div class="list-card">
+            <div class="list-header">
+                <h2>文件列表</h2>
+                {% if files %}
+                <a href="{{ url_for('delete_all') }}" class="btn-delete-all"
+                   onclick="return confirm('确定删除全部文件？')">🗑 清空</a>
+                {% endif %}
+            </div>
+
+            {% if files %}
+            <ul>
+                {% for file in files %}
+                {% if loop.first or file.date_label != files[loop.index0 - 1].date_label %}
+                <li style="list-style:none; padding:0;">
+                    <div class="date-divider"><span>{{ file.date_label }}</span></div>
+                </li>
+                {% endif %}
+                <li class="file-item">
+                    <div class="file-icon">{{ file.name | file_icon }}</div>
+                    <div class="file-info">
+                        <a href="{{ url_for('download_file', filename=file.name) }}" title="{{ file.name }}">{{ file.name }}</a>
+                        <div class="file-time">{{ file.time_str }}</div>
+                    </div>
+                    <a href="{{ url_for('delete_file', filename=file.name) }}" class="btn-del" title="删除">🗑</a>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <div class="empty">
+                <div class="empty-icon">📭</div>
+                <div>暂无文件，快来上传吧</div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
     <script>
-        function delete_all() {
-            window.location.href = "{{ url_for('delete_all') }}";
-        }
+        // 显示已选文件数量
+        const input = document.getElementById('file-input');
+        const hint = document.getElementById('file-hint');
+        input.addEventListener('change', () => {
+            const n = input.files.length;
+            hint.textContent = n > 0 ? `已选择 ${n} 个文件` : '';
+        });
 
-
+        // 拖拽高亮
+        const zone = document.getElementById('drop-zone');
+        zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
+        zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+        zone.addEventListener('drop', e => {
+            e.preventDefault();
+            zone.classList.remove('dragover');
+            // 将拖拽的文件赋给 input，并自动提交
+            const dt = e.dataTransfer;
+            if (dt.files.length) {
+                // 通过 DataTransfer 设置 files
+                const transfer = new DataTransfer();
+                for (const f of dt.files) transfer.items.add(f);
+                input.files = transfer.files;
+                hint.textContent = `已选择 ${input.files.length} 个文件`;
+            }
+        });
     </script>
 </body>
 
